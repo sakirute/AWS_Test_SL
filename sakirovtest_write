@@ -1,0 +1,37 @@
+var AWS = require('aws-sdk');
+var dclient = new AWS.DynamoDB.DocumentClient();
+
+exports.handler = function(event, context, callback) {
+   
+   var param = {
+       "TableName" : "sakitest",
+       Item: {
+           "id": event.id,
+           "mk": event.mk,
+           "name": event.name
+       }
+   };
+   
+   if(event.id==="") {
+        let min = 10;
+        let max = 20;
+        var ran=Math.floor(Math.random() * max) + min;
+        param = {
+            "TableName" : "sakitest",
+            Item: {
+               "id": ran,
+                "mk": event.mk,
+               "name": event.name
+            }
+        };
+   }
+   
+   dclient.put(param,function(error,data) {
+        if(error) {
+            callback(error,null);
+        } else {
+            callback(null,data);
+        }
+    });
+
+};
