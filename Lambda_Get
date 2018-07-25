@@ -1,0 +1,38 @@
+var AWS = require('aws-sdk');
+var dclient = new AWS.DynamoDB.DocumentClient();
+
+var getItems = (event, context, callback) => {
+    
+    var param = {
+            TableName: "sakitest",
+            Key: {
+                "id": event.id,
+                "mk": event.mk
+            }
+        };
+    
+    if(event.id === "") {
+        
+        dclient.scan(param,(error,data) => {    //Scan
+            if(error) {
+                callback(error,null);
+            } else {
+                callback(null,data);
+            }
+        });
+    
+    } else {
+    
+        dclient.get(param,(error,data) => {     //Get
+            if(error) {
+            callback(null,"Error:"+event.id);
+            } else {
+                callback(null,data);
+            }
+        });
+       
+   }
+
+};
+
+exports.handler = getItems;
